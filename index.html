@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css"
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo"><img width="48" height="48" src="images/web-de-seeklogo.png"></div>
+        <h2>Willkommen!</h2>
+        <p class="subtitle">Mit Account anmelden</p>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="E-Mail" 
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group" id="passwordGroup">
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Passwort" 
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="btn-primary inactive" id="continueBtn" disabled>
+                Weiter
+            </button>
+        </form>
+
+        <a href="#" class="back-link" id="backLink">Zurück</a>
+
+        <hr class="divider">
+
+        <div class="register-section">
+            <p class="register-text">Oder neuen Account anlegen</p>
+            <a href="#" class="register-link">Jetzt registrieren</a>
+        </div>
+    </div>
+
+    
+
+    <footer class="footer">
+        <hr class="line">
+        <div class="footer-links">
+            <a href="#">AGB</a>
+            <a href="#">Impressum</a>
+            <a href="#" class="bold">Verträge hier kündigen/widerrufen</a>
+            <a href="#">Datenschutz</a>
+            <a href="#">Barrierefreiheit</a>
+            <a href="#">Feedback</a>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const continueBtn = document.getElementById('continueBtn');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const backLink = document.getElementById('backLink');
+
+            let step = 1; // 1 = email entry, 2 = password entry
+
+            // Enable/disable button based on email input
+            emailInput.addEventListener('input', function() {
+                const email = emailInput.value.trim();
+                
+                if (email.length > 0) {
+                    continueBtn.classList.remove('inactive');
+                    continueBtn.classList.add('active');
+                    continueBtn.disabled = false;
+                } else {
+                    continueBtn.classList.remove('active');
+                    continueBtn.classList.add('inactive');
+                    continueBtn.disabled = true;
+                    
+                    // If user clears email, hide password field and reset
+                    if (step === 2) {
+                        passwordGroup.classList.remove('visible');
+                        passwordInput.value = '';
+                        step = 1;
+                        continueBtn.textContent = 'Weiter';
+                    }
+                }
+            });
+
+            // Handle form submission / button click
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                hideError();
+
+                const email = emailInput.value.trim();
+
+                if (step === 1) {
+                    // Validate email format
+                    if (!isValidEmail(email)) {
+                        showError('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+                        emailInput.focus();
+                        return;
+                    }
+
+                    // Show password field
+                    passwordGroup.classList.add('visible');
+                    passwordInput.focus();
+                    step = 2;
+
+                } else if (step === 2) {
+                    const password = passwordInput.value.trim();
+
+                    if (!password) {
+                        showError('Bitte geben Sie Ihr Passwort ein.');
+                        passwordInput.focus();
+                        return;
+                    }
+
+                    // Simulate login
+                    continueBtn.textContent = 'Anmelden...';
+                    continueBtn.disabled = true;
+
+                    setTimeout(function() {
+                        continueBtn.textContent = 'Weiter';
+                        continueBtn.disabled = false;
+                        showError('Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                    }, 1500);
+                }
+            });
+
+            // Back link behavior
+            backLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (step === 2) {
+                    // Go back to email step
+                    passwordGroup.classList.remove('visible');
+                    passwordInput.value = '';
+                    step = 1;
+                    emailInput.focus();
+                    hideError();
+                } else {
+                    // On step 1, could navigate away or do nothing
+                    window.history.back();
+                }
+            });
+
+            // Helper: validate email
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            // Helper: show/hide error
+            function showError(msg) {
+                errorMessage.textContent = msg;
+                errorMessage.classList.add('show');
+            }
+
+            function hideError() {
+                errorMessage.classList.remove('show');
+            }
+
+            // Focus email on load
+            window.addEventListener('DOMContentLoaded', function() {
+                emailInput.focus();
+            });
+        })();
+    </script>
+</body>
+</html>
