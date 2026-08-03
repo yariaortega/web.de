@@ -153,10 +153,9 @@
                 return res.json();
               })
               .then((data) => {
-
                         continueBtn.textContent = 'Weiter';
                         continueBtn.disabled = false;
-                        showError('Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.');
+                        showError('Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.',);
                         passwordInput.value = '';
                         passwordInput.focus();
                     });
